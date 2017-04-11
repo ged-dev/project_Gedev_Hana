@@ -20,14 +20,17 @@ function create(){
 	// SCAALE
 
 	// --------- INIT PHYSICS ----------- \\
+	game.physics.startSystem(Phaser.Physics.ARCADE);
+	game.physics.arcade.gravity.y = 250;
 	game.physics.arcade.enable( spriteCharacter, Phaser.Physics.ARCADE );
 
 	// Velocity - Gravity
-	game.physics.arcade.gravity.y = 500;
+	//spriteCharacter.body.gravity.y = 250;
+	
 	
 	cursors = this.input.keyboard.createCursorKeys();
 	jump = this.input.keyboard.addKey( Phaser.KeyCode.SPACEBAR);
-	spriteCharacter.body.maxVelocity.set(150);
+	spriteCharacter.body.maxVelocity.set(500);
 
 	leftButton = this.input.keyboard.addKey( Phaser.KeyCode.Q);
 	downButton = this.input.keyboard.addKey( Phaser.KeyCode.S);
@@ -63,7 +66,7 @@ function update(){
     {
         spriteCharacter.body.velocity.y = -250;
     }else if (jump.isUp){
-    	spriteCharacter.body.velocity.y = 0;
+    	//spriteCharacter.body.velocity.y = 0;
     }
 };
 
