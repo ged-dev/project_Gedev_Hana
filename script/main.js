@@ -1,23 +1,65 @@
 var game = new Phaser.Game(1200, 768, Phaser.AUTO, 'game', 
 				{preload: preload, create: create, update: update, render: render});
+
+
+
 var spriteCharacter;
+var map;
+var score = 0;
+var death = 0;
+var jumpTimer = 0;
+
+
+function hitCoin(sprite, tile){
+
+	map.removeTile(tile.x, tile.y);
+	score++;
+	console.log(score);
+	return false;
+}
+
+// function hitBlockGravity(sprite, tile){
+
+// 	if(spriteCharacter.body.touching.up){
+// 		console.log("ça touche ! ");	
+// 	}
+
+// }
+
+
+
 
 
 function preload(){
 	game.load.spritesheet('character','assets/graphics/sprite_player.png', 30, 49, 18);
+	game.load.image('tiles', 'assets/graphics/sheet1.png');
+	game.load.tilemap('gravity', 'assets/levels/gravity.json', null, Phaser.Tilemap.TILED_JSON);
 };
 
 
-
 function create(){
+	map = game.add.tilemap('gravity');
+	map.addTilesetImage('sheet1', 'tiles');
+	layer = map.createLayer('Calque de Tile 1');
+
+    //  This resizes the game world to match the layer dimensions
+    layer.resizeWorld();
+
+    map.setCollisionBetween(1, 15);
+    map.setTileIndexCallback(10, hitCoin, this);
+
+
 	game.stage.backgroundColor = "#77A6B6";
-	spriteCharacter = game.add.sprite(300, 200, 'character');
+	spriteCharacter = game.add.sprite(50, 50, 'character');
+
 
 	let walkLeft = spriteCharacter.animations.add('walkLeft', [0, 1, 2, 3, 4, 5, 6, 7, 8], 15, true);
 	let walkRight = spriteCharacter.animations.add('walkRight', [9, 10, 11, 12, 13, 14, 15, 16, 17], 15, true);
 
 	spriteCharacter.frame = 14;
-	// SCAALE
+
+
+
 
 	// --------- INIT PHYSICS ----------- \\
 	game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -27,7 +69,8 @@ function create(){
 	// Velocity - Gravity
 	//spriteCharacter.body.gravity.y = 250;
 	
-	
+
+	// ---------- KEYBOARD ------------- \\ 
 	cursors = this.input.keyboard.createCursorKeys();
 	jump = this.input.keyboard.addKey( Phaser.KeyCode.SPACEBAR);
 	spriteCharacter.body.maxVelocity.set(500);
@@ -38,8 +81,20 @@ function create(){
 	rightButton = this.input.keyboard.addKey( Phaser.KeyCode.D);
 };
 
+
+
+
+
+
 function update(){
+	game.physics.arcade.collide(spriteCharacter, layer);
+
+
 	spriteCharacter.body.velocity.x = 0;
+
+	if(spriteCharacter.body.blocked.up){
+		
+	}
 
 	if (cursors.left.isDown)
     {
@@ -62,9 +117,10 @@ function update(){
         //spriteCharacter.frame = 4;
     }
 
-    if (jump.isDown)
+    if (jump.isDown && spriteCharacter.body.onFloor() && game.time.now > jumpTimer)
     {
         spriteCharacter.body.velocity.y = -250;
+        jumpTimer = game.time.now + 750;
     }else if (jump.isUp){
     	//spriteCharacter.body.velocity.y = 0;
     }
