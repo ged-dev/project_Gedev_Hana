@@ -18,17 +18,6 @@ function hitCoin(sprite, tile){
 	return false;
 }
 
-// function hitBlockGravity(sprite, tile){
-
-// 	if(spriteCharacter.body.touching.up){
-// 		console.log("ça touche ! ");	
-// 	}
-
-// }
-
-
-
-
 
 function preload(){
 	game.load.spritesheet('character','assets/graphics/sprite_player.png', 30, 49, 18);
@@ -40,11 +29,13 @@ function preload(){
 function create(){
 	map = game.add.tilemap('gravity');
 	map.addTilesetImage('sheet1', 'tiles');
-	layer = map.createLayer('Calque de Tile 1');
+	layer = map.createLayer('Fond');
+	blocBleu = map.createLayer('Gravity');
 
+	console.log(layer);
     //  This resizes the game world to match the layer dimensions
     layer.resizeWorld();
-
+    console.log(map);
     map.setCollisionBetween(1, 15);
     map.setTileIndexCallback(10, hitCoin, this);
 
@@ -81,19 +72,22 @@ function create(){
 	rightButton = this.input.keyboard.addKey( Phaser.KeyCode.D);
 };
 
-
-
-
-
+function callback(sprite, tile){
+	// if(tile.index == 14){
+	// 	console.log("Le cube bleu")
+	// }
+	console.log("Le cube bleu");
+}
 
 function update(){
 	game.physics.arcade.collide(spriteCharacter, layer);
+	game.physics.arcade.collide(spriteCharacter, blocBleu, callback);
 
 
 	spriteCharacter.body.velocity.x = 0;
 
 	if(spriteCharacter.body.blocked.up){
-		
+ 		console.log("ça touche ! ");
 	}
 
 	if (cursors.left.isDown)
